@@ -1,0 +1,65 @@
+version: "3.7"
+services:
+  api:
+    build:
+      args:
+        user: max
+        uid: 1000
+      context: $PWD/backend
+      dockerfile: $PWD/backend/Dockerfile
+    command: bash -c "composer update && php artisan migrate && php-fpm"
+    container_name: desafio_ot-api
+    working_dir: /var/www/
+    volumes:
+      - ./backend:/var/www
+    networks:
+      - desafio_ot
+    depends_on: 
+      - db
+      - redis
+
+  db:
+    image: mysql:latest
+    container_name: desafio_ot_db
+    environment:
+      MYSQL_USER: root
+      MYSQL_DATABASE: desafio_ot
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - $PWD/backend/docker-compose/mysql/init.sql:/data/application/init.sql
+    networks:
+      desafio_ot:
+        aliases:
+          - desafio_ot_db
+
+  nginx:
+    image: nginx:1.21.1-alpine
+    container_name: desafio_ot-nginx
+    ports:
+      - 8000:80
+      - 443:443
+    volumes:
+      - $PWD/backend/:/var/www
+      - $PWD/backend/docker-compose/nginx/:/etc/nginx/conf.d
+    networks:
+      - desafio_ot
+    depends_on: 
+      - api
+
+  redis:
+    image: redis:latest
+    container_name: desafio_ot-redis
+    ports: 
+      - 6379:6379
+    networks:
+      - desafio_ot
+
+networks:
+  desafio_ot:
+    # external: true
+    driver: bridge

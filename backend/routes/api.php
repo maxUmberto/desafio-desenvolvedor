@@ -4,7 +4,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // controllers
-use App\Http\Controllers\LoginController;
+use App\Http\Controllers\{
+    ExchangeController,
+    LoginController
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +25,7 @@ Route::post('login', [LoginController::class, 'userLogin']);
 Route::post('logout', [LoginController::class, 'userLogout']);
 // Route::post('forgot-password', [PasswordController::class, 'forgotPassoword']);
 // Route::post('reset-password', [PasswordController::class, 'resetPassword']);
+
+Route::middleware(['jwt.auth'])->prefix('exchange')->group(function() {
+    Route::post('simulate', [ExchangeController::class, 'simulateExchangeCurrency']);
+});

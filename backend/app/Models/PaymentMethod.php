@@ -27,4 +27,8 @@ class PaymentMethod extends Model {
         return $this->hasMany(UserHistoric::class);
     }
 
+    public function getNameAttribute($value) {
+        return ucfirst(str_replace('_', ' ', $value));
+    }
+
 }

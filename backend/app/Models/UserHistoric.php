@@ -22,8 +22,8 @@ class UserHistoric extends Model {
         'destination_currency_code',
         'destination_currency_name',
         'destination_currency_total_bough_value',
-        'payment_rate_value',
-        'exchange_rate_value',
+        'payment_method_tax_value',
+        'exchange_tax_value',
         'exchange_used_value',
         'exchange_rate_percent',
         'payment_method_id'

@@ -37,4 +37,8 @@ class User extends Authenticatable implements JWTSubject {
     public function userHistoric() {
         return $this->hasMany(UserHistoric::class);
     }
+
+    public function getUsernameAttribute() {
+        return ucwords($this->first_name . " " . $this->last_name);
+    }
 }

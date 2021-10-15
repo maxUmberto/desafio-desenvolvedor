@@ -25,7 +25,6 @@ class UserHistoric extends Model {
         'payment_method_tax_value',
         'exchange_tax_value',
         'exchange_used_value',
-        'exchange_rate_percent',
         'payment_method_id'
     ];
 

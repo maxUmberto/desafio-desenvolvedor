@@ -9,6 +9,7 @@ use App\Enums\CurrencyMessages;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Mail;
 
 // models
 use App\Models\{
@@ -17,13 +18,15 @@ use App\Models\{
 };
 
 // jobs 
-use App\Jobs\SendExchangeCurrencyEmail;
+use App\Jobs\SendExchangeCurrencyEmailJob;
 
 class SimulateExchangeCurrencyTest extends TestCase {
 
     use DatabaseMigrations;
     
     public function testSimulateBuyWithBoleto() {
+
+        Bus::fake();
 
         $user = User::factory()->create();
         $payment_method = PaymentMethod::where('name', 'boleto')->first();
@@ -39,7 +42,7 @@ class SimulateExchangeCurrencyTest extends TestCase {
                             'payment_method_id'         => $payment_method->id
                         ]);
 
-        $this->assertResponseJson($response);
+        $this->assertResponseJson($response, $user, $payment_method);
 
         $response = json_decode($response->getContent())->data;
 
@@ -48,6 +51,8 @@ class SimulateExchangeCurrencyTest extends TestCase {
     }
     
     public function testSimulateBuyWithCreditCard() {
+
+        Bus::fake();
 
         $user = User::factory()->create();
         $payment_method = PaymentMethod::where('name', 'cartao_de_credito')->first();
@@ -63,7 +68,7 @@ class SimulateExchangeCurrencyTest extends TestCase {
                             'payment_method_id'         => $payment_method->id
                         ]);
 
-        $this->assertResponseJson($response);
+        $this->assertResponseJson($response, $user, $payment_method);
 
         $response = json_decode($response->getContent())->data;
 
@@ -71,7 +76,7 @@ class SimulateExchangeCurrencyTest extends TestCase {
 
     }
 
-    private function assertResponseJson(\Illuminate\Testing\TestResponse $response) {
+    private function assertResponseJson(\Illuminate\Testing\TestResponse $response, User $user, PaymentMethod $payment_method) {
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'success',
@@ -88,7 +93,24 @@ class SimulateExchangeCurrencyTest extends TestCase {
                 ]
             ]);
 
-        Bus::assertDispatched(SendExchangeCurrencyEmail::class);
+        Bus::assertDispatched(SendExchangeCurrencyEmailJob::class);
+
+        $response = json_decode($response->getContent())->data;
+
+        $this->assertDatabaseHas('users_historics', [
+            'user_id' => $user->id,
+            'source_currency_value' => $response->source_currency_value,
+            'source_currency_code' => 'BRL',
+            'source_currency_name' => 'Real Brasileiro',
+            'destination_currency_bid_value' => $response->destination_currency_bid_value,
+            'destination_currency_code' => 'USD',
+            'destination_currency_name' => 'Dólar Americano',
+            'destination_currency_total_bough_value' => $response->destination_currency_total_bough_value,
+            'payment_method_tax_value' => $response->payment_method_tax_value,
+            'exchange_tax_value' => $response->exchange_tax_value,
+            'exchange_used_value' => $response->exchange_used_value,
+            'payment_method_id' => $payment_method->id
+        ]);
     }
 
     private function assertReturnValues(Object $response, Float $source_currency_value, PaymentMethod $payment_method) {

@@ -21,7 +21,7 @@ class UserHistoricService {
         $destination_currency_name = $currency_name[0];
         $source_currency_name = $currency_name[1];
 
-        UserHistoric::create([
+        $user_historic = UserHistoric::create([
             'user_id'                                => auth()->user()->id,
             'source_currency_value'                  => $request->source_currency_value,
             'source_currency_code'                   => $request->source_currency_code,
@@ -35,6 +35,8 @@ class UserHistoricService {
             'exchange_used_value'                    => $exchange_info['exchange_used_value'],
             'payment_method_id'                      => $payment_method->id
         ]);
+
+        return $user_historic;
 
     }
 

@@ -8,19 +8,27 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Mail;
 
-class SendExchangeCurrencyEmail implements ShouldQueue
+// models
+use App\Models\UserHistoric;
+
+// mails
+use App\Mail\ExchangeCurrencyMail;
+
+class SendExchangeCurrencyEmailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    private $user_historic;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
-    {
-        //
+    public function __construct(UserHistoric $user_historic) {
+        $this->user_historic = $user_historic;
     }
 
     /**
@@ -28,8 +36,13 @@ class SendExchangeCurrencyEmail implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
-    {
-        //
+    public function handle() {
+
+        $user = $this->user_historic->user;
+
+        Mail::to($user->email)->queue(new ExchangeCurrencyMail($this->user_historic));
+
+
+        
     }
 }

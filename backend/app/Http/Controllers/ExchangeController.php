@@ -14,6 +14,9 @@ use App\Services\{
     UserHistoricService
 };
 
+// jobs
+use App\Jobs\SendExchangeCurrencyEmailJob;
+
 class ExchangeController extends Controller {
 
     private $awesome_api;
@@ -31,7 +34,9 @@ class ExchangeController extends Controller {
         $currency_quote = $this->awesome_api->getCurrencyQuote($request->source_currency_code, $request->destination_currency_code);
         $exchange_info = $this->exchange_service->convertCurrencyValue($request, $currency_quote);
 
-        $this->user_historic_service->saveUserHistoric($request, $exchange_info, $currency_quote);
+        $user_historic = $this->user_historic_service->saveUserHistoric($request, $exchange_info, $currency_quote);
+
+        SendExchangeCurrencyEmailJob::dispatch($user_historic);
 
         return response()->json([
             'success' => true,

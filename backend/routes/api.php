@@ -28,4 +28,5 @@ Route::post('logout', [LoginController::class, 'userLogout']);
 
 Route::middleware(['jwt.auth'])->prefix('exchange')->group(function() {
     Route::post('simulate', [ExchangeController::class, 'simulateExchangeCurrency']);
+    Route::get('currencies', [ExchangeController::class, 'getAvailableCurrencies']);
 });

@@ -22,5 +22,29 @@ class AwesomeApi {
 
         return json_decode($response->getBody())->$currendy_string;
     }
+
+    public function getAvailableCurrencies() {
+        $response = $this->client->request('GET', "/available/uniq");
+
+        $response = json_decode($response->getBody());
+
+        return $this->formatAvailableCurrenciesReturn($response);
+    }
+
+    private function formatAvailableCurrenciesReturn(object $currencies) {
+        $currencies_array = [];
+        $currencies = get_object_vars($currencies);
+        
+        foreach($currencies as $currency_code => $currency_name) {
+            array_push($currencies_array, [
+                'currency_code' => $currency_code,
+                'currency_name' => $currency_name
+            ]);
+        }
+
+        sort($currencies_array);
+
+        return $currencies_array;
+    }
     
 }

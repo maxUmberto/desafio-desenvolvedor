@@ -45,4 +45,14 @@ class ExchangeController extends Controller {
 
     }
 
+    public function getAvailableCurrencies() {
+        $available_currencies = $currency_quote = $this->awesome_api->getAvailableCurrencies();
+
+        return response()->json([
+            'data' => [
+                'available_currencies' => $available_currencies
+            ]
+        ], 200);
+    }
+
 }

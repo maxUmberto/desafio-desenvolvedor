@@ -1,41 +1,41 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
-import Home from '../views/Home.vue';
-import Login from '../views/Login.vue';
-import SignUp from '../views/SignUp.vue';
-import Historic from '../views/Historic.vue';
-import Settings from '../views/Settings.vue';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import store from '../store';
 
-const routes = [
+import Home from '@/views/Home.vue';
+import Login from '@/views/Login.vue';
+import SignUp from '@/views/SignUp.vue';
+
+const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
-    name: 'Home',
+    path: '',
     component: Home,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/login',
     name: 'Login',
-    component: Login,
+    component: Login
   },
   {
-    path: '/registrar',
-    name: 'SignUp',
-    component: SignUp,
+    path: '/signup',
+    component: SignUp
   },
-  {
-    path: '/historico',
-    name: 'Historic',
-    component: Historic,
-  },
-  {
-    path: '/configuracoes',
-    name: 'Settings',
-    component: Settings,
-  },
-];
+]
 
 const router = createRouter({
-  history: createWebHashHistory(),
-  routes, // short for `routes: routes`
+  history: createWebHistory(process.env.BASE_URL),
+  routes
 });
 
-export default router;
+router.beforeEach((to, from, next) => {
+
+  const auth = store.state.authenticated;
+  const requiresAuth = to.matched.some( record => record.meta.requiresAuth );
+
+  if(requiresAuth && !auth) next({name: 'Login'});
+  else next();
+})
+
+export default router

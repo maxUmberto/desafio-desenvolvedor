@@ -1,34 +1,60 @@
 <template>
-  <nav class="navbar">
-    <div class="logo">
-      <!-- <img src="@/assets/logo.png" alt=""> -->
-      <p>Logo</p>
-    </div>
-    <div class="navbar-itens">
-      <router-link to="/">Início</router-link> |
-      <router-link to="/historico">Histórico</router-link> |
-      <router-link to="/configuracoes">Configurações</router-link> |
-      <router-link to="/login">Login</router-link>
-
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+      <router-link class="navbar-brand" to="/">Início</router-link>
+      <div>
+        <ul class="navbar-nav me-auto mb-2 mb-md-0" v-if="!auth">
+          <li class="nav-item">
+            <router-link class="nav-link active" to="/login">Login</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link active" to="/signup">Cadastrar</router-link>
+          </li>
+        </ul>
+        <ul class="navbar-nav me-auto mb-2 mb-md-0" v-if="auth">
+          <li class="nav-item">
+            <router-link class="nav-link active" to="/" @click="logout">Logout</router-link>
+          </li>
+        </ul>
+      </div>
     </div>
   </nav>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
 
-export default defineComponent({
+import axios from 'axios';
+import { useStore } from 'vuex';
+import { computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useCookie } from 'vue-cookie-next';
+
+export default {
   name: 'Navbar',
 
-});
-</script>
+  setup() {
+    const store = useStore();
+    const cookie = useCookie();
+    const router = useRouter();
 
-<style scoped>
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 10px;
-  background-color: pink;
+    const auth = computed( () => store.state.authenticated );
+
+    const logout = () => {
+      axios.post(process.env.VUE_APP_API_URL + '/logout', {}, {
+        headers: {
+          Authorization: 'Bearer ' + cookie.getCookie('jwt')
+        }
+      }).finally(async () => {
+        await cookie.removeCookie('jwt');
+        await router.push('/login');
+        await store.dispatch('setAuth', false);
+      });
+    }
+
+    return {
+      auth,
+      logout
+    }
+  }
 }
-</style>
+</script>

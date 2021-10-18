@@ -1,32 +1,48 @@
 <template>
-  <Navbar/>
-  <router-view/>
-  <Footer/>
+  <Navbar />
+  <main class="form-signin">
+    <router-view></router-view>
+  </main>
+  
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import Navbar from './components/Navbar.vue';
-import Footer from './components/Footer.vue';
+<script>
 
-export default defineComponent({
-  name: 'App',
+import Navbar from './components/Navbar.vue'
+
+export default {
   components: {
-    Navbar,
-    Footer,
-  },
-});
+    Navbar
+  }
+}
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap');
 
-body {
-  margin: 0 auto;
-  font-family: 'Roboto', sans-serif;
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
 }
 
-a {
-  text-decoration: none;
+.form-signin .checkbox {
+  font-weight: 400;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 </style>

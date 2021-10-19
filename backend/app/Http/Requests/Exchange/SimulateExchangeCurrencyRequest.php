@@ -23,8 +23,8 @@ class SimulateExchangeCurrencyRequest extends FormRequest
      */
     public function rules() {
         return [
-            'source_currency_code'      => 'required|string|size:3|different:destination_currency_code',
-            'destination_currency_code' => 'required|string|size:3|different:source_currency_code',
+            'source_currency_code'      => 'required|string|different:destination_currency_code',
+            'destination_currency_code' => 'required|string|different:source_currency_code',
             'source_currency_value'     => 'required|numeric|min:1000|max:100000',
             'payment_method_id'         => 'required|exists:payment_methods,id'
         ];

@@ -1,6 +1,6 @@
 <template>
   <Navbar />
-  <main class="form-signin">
+  <main class="container">
     <router-view></router-view>
   </main>
   

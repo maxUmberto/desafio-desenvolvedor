@@ -1,8 +1,9 @@
-import { Commit, createStore } from 'vuex'
+import { Commit, createStore } from 'vuex';
+import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
   state: {
-    authenticated: false
+    authenticated: false,
   },
   mutations: {
     SET_AUTH: (state: {authenticated: boolean}, auth: boolean) => state.authenticated = auth
@@ -11,5 +12,6 @@ export default createStore({
     setAuth: ({commit}: {commit: Commit}, auth: boolean) => commit('SET_AUTH', auth)
   },
   modules: {
-  }
+  },
+  plugins: [createPersistedState()],
 })

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 // controllers
 use App\Http\Controllers\{
     ExchangeController,
+    HistoricController,
     LoginController
 };
 
@@ -29,4 +30,5 @@ Route::post('logout', [LoginController::class, 'userLogout']);
 Route::middleware(['jwt.auth'])->prefix('exchange')->group(function() {
     Route::post('simulate', [ExchangeController::class, 'simulateExchangeCurrency']);
     Route::get('currencies', [ExchangeController::class, 'getAvailableCurrencies']);
+    Route::get('historic', [HistoricController::class, 'getUserHistoric']);
 });

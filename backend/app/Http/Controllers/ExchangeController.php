@@ -17,6 +17,9 @@ use App\Services\{
 // jobs
 use App\Jobs\SendExchangeCurrencyEmailJob;
 
+// models
+use App\Models\PaymentMethod;
+
 class ExchangeController extends Controller {
 
     private $awesome_api;
@@ -50,7 +53,8 @@ class ExchangeController extends Controller {
 
         return response()->json([
             'data' => [
-                'available_currencies' => $available_currencies
+                'available_currencies' => $available_currencies,
+                'payment_methods'      => PaymentMethod::all()
             ]
         ], 200);
     }

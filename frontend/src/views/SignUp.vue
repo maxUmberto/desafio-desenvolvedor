@@ -64,6 +64,7 @@ export default {
         email: data.email,
         password: data.password,
       }).then( async (response: any) => {
+        await localStorage.setItem('user', JSON.stringify(response.data.user));
         await cookie.setCookie('jwt', response.data.token)
         await store.dispatch('setAuth', true);
         await router.push('/');

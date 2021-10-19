@@ -4,11 +4,19 @@ import store from '../store';
 import Home from '@/views/Home.vue';
 import Login from '@/views/Login.vue';
 import SignUp from '@/views/SignUp.vue';
+import Historic from '@/views/Historic.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '',
     component: Home,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/historico',
+    component: Historic,
     meta: {
       requiresAuth: true
     }
@@ -27,14 +35,14 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
-});
+})
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
 
-  const auth = store.state.authenticated;
+  const auth = await store.state.authenticated;
   const requiresAuth = to.matched.some( record => record.meta.requiresAuth );
 
-  if(requiresAuth && !auth) next({name: 'Login'});
+  if( requiresAuth && !auth) next({name: 'Login'});
   else next();
 })
 

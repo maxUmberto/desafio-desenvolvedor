@@ -33,6 +33,7 @@ class LoginController extends Controller {
         return response()->json([
             'token_type' => 'bearer',
             'token'      => $token,
+            'user'       => $user,
             'message'    => 'Usuário cadastrado com sucesso',
             'success'    => true
         ], 200);
@@ -58,6 +59,7 @@ class LoginController extends Controller {
         return response()->json([
             'token_type' => 'bearer',
             'token'      => $token,
+            'user'       => $user,
             'message'    => 'Usuário logado com sucesso',
             'success'    => true
         ], 200);

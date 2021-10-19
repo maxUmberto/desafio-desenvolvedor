@@ -13,7 +13,10 @@
         </ul>
         <ul class="navbar-nav me-auto mb-2 mb-md-0" v-if="auth">
           <li class="nav-item">
-            <router-link class="nav-link active" to="/" @click="logout">Logout</router-link>
+            <router-link class="nav-link active" to="/historico">Histórico</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link active" to="/" @click="logout">Sair</router-link>
           </li>
         </ul>
       </div>
@@ -45,6 +48,7 @@ export default {
           Authorization: 'Bearer ' + cookie.getCookie('jwt')
         }
       }).finally(async () => {
+        localStorage.removeItem('user');
         await cookie.removeCookie('jwt');
         await router.push('/login');
         await store.dispatch('setAuth', false);

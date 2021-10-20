@@ -18,6 +18,20 @@ services:
       - db
       - redis
 
+  front:
+    build:
+      context: $PWD/frontend
+      dockerfile: $PWD/frontend/Dockerfile
+    container_name: desafio_ot-front
+    volumes: 
+      - ./frontend:/app:rw
+    networks:
+      - desafio_ot
+    depends_on: 
+      - api
+    ports:
+      - "8080:8080"
+
   db:
     image: mysql:latest
     container_name: desafio_ot_db

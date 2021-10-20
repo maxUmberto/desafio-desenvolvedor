@@ -1,48 +1,73 @@
-### A Oliveira Trust:
-A Oliveira Trust é uma das maiores empresas do setor Financeiro com muito orgulho, desde 1991, realizamos as maiores transações do mercado de Títulos e Valores Mobiliários.
+# Desafio desenvolvedor pleno Oliveira Trust
 
-Somos uma empresa em que valorizamos o nosso colaborador em primeiro lugar, sempre! Alinhando isso com a nossa missão "Promover a satisfação dos nossos clientes e o desenvolvimento pessoal e profissional da nossa equipe", estamos construindo times excepcionais em Tecnologia, Comercial, Engenharia de Software, Produto, Financeiro, Jurídico e Data Science.
+Este projeto foi desenvolvido como parte do processo seletivo para desenvolvedor pleno na Oliveira Trust (10/2021)
 
-Estamos buscando uma pessoa que seja movida a desafios, que saiba trabalhar em equipe e queira revolucionar o mercado financeiro!
+## Antes de começar
+Este projeto foi desenvolvido utilizando **Docker**, então é recomendável que se possua alguma familiaridade com a tecnologia e já o tenha instalado em seu sistema. Caso não conheça ou não tenha instalado, basta seguir esse [tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04-pt).
 
-Front-end? Back-end? Full Stack? Analista de dados? Queremos conhecer gente boa, que goste de colocar a mão na massa, seja responsável e queira fazer história!
+## Preparando o ambiente
 
-#### O que você precisa saber para entrar no nosso time: 🚀
-- Trabalhar com frameworks (Laravel, Lumen, Yii, Cake, Symfony ou outros...)
-- Banco de dados relacional (MySql, MariaDB)
-- Trabalhar com microsserviços
+Primeiro vamos clonar o projeto. Abra seu terminal e digite
+```bash
+git clone https://github.com/maxUmberto/desafio-desenvolvedor.git
+```
+Quando terminamos de clonar o projeto, entre no diretório `/desafio-desevolvedor/backend`. Dentro deste diretório precisamo criar um arquivo chamado `.env`. Depois de criado, copie o conteúdo do arquivo `.env.example` para dentro de `.env`.  
 
-#### O que seria legal você saber também: 🚀
-- Conhecimento em banco de dados não relacional;
-- Conhecimento em docker;
-- Conhecimento nos serviços da AWS (RDS, DynamoDB, DocumentDB, Elasticsearch);
-- Conhecimento em metodologias ágeis (Scrum/Kanban);
+Se estiver utilizando linux, basta copiar e colar o comando abaixo:
+```bash
+cd desafio-desenvolvedor/backend && cp .env.example .env
+```
 
-#### Ao entrar nessa jornada com o nosso time, você vai: 🚀
-- Trabalhar em uma equipe de tecnologia, em um ambiente leve e descontraído e vivenciar a experiência de mudar o mercado financeiro;
-- Dress code da forma que você se sentir mais confortável;
-- Flexibilidade para home office e horários;
-- Acesso a cursos patrocinados pela empresa;
+## Inicializando o projeto
+Como estamos utilizando Docker, a primeira execução é um pouco lenta, uma vez que iremos baixar as imagens que o projeto precisa. As próximas execuções serão mais rápidas.
 
-#### Benefícios 🚀
-- Salário compatível com o mercado;
-- Vale Refeição;
-- Vale Alimentação;
-- Vale Transporte ou Vale Combustível;
-- Plano de Saúde e Odontológico;
-- Seguro de vida;
-- PLR Semestral;
-- Horário Flexível;
-- Parcerias em farmácias
+Na raiz do diretório `/desafio-desenvolvedor`, digite o comando abaixo:
+```bash
+docker-compose up
+```
+Com o comando acima você poderá ver o log de execução dos containers do Docker. Recomendo utilizar o comando acima na primeira execução, pois caso aconteça algum erro é mais fácil de identificar o problema. O ponto negativo desse comando é que ele "prende" o seu terminal com os logs dos containers. Caso você queira continuar com seu terminal livre, basta rodar o comando abaixo
+```bash
+docker-compose up -d
+```
+O argumento `-d` vai fazer com que os containers rodem em background e não "prendam" seu terminal. Recomendo rodar este comando somente em execuções posteriores.
 
-#### Local: 🚀
-Barra da Tijuca, Rio de Janeiro, RJ
+Aguarde até que todos os containers estejam rodando. Você pode verificar isso digitando
+```bash
+docker ps
+```
+Se tudo tiver certo, você irá ver os seguintes containers rodando:
+- desafio_ot-front
+- desafio_ot-nginx
+- desafio_ot-api
+- desafio_ot_db
+- desafio_ot-redis
 
-#### Conheça mais sobre nós! :sunglasses:
-- Website (https://www.oliveiratrust.com.br/)
-- LinkedIn (https://www.linkedin.com/company/oliveiratrust/)
+Se tudo correu bem até aqui, já está pronto para testar o projeto. Abra seu navegador e navegue até o endereço `http://localhost:8080`. Agora basta criar um usuário e testar a aplicação. ~~E com fé nada vai quebrar~~
 
-A Oliveira Trust acredita na inclusão e na promoção da diversidade em todas as suas formas. Temos como valores o respeito e valorização das pessoas e combatemos qualquer tipo de discriminação. Incentivamos a todos que se identifiquem com o perfil e requisitos das vagas disponíveis que candidatem, sem qualquer distinção.
+## Testando email
+Para que o projeto consiga mandar emails, é necessário fazer alguns procedimentos antes. Vamos utilizar seu email pessoal do GMAIL para isso. Como você irá executar este projeto no seu local, não precisa se preocupar de inserir suas informações, elas não ira se tornar públicas ~~mas cuidado com o colega de trabalho passando na tela atrás~~.
 
-## Pronto para o desafio? 🚀🚀🚀🚀
-https://github.com/Oliveira-Trust/desafio-desenvolvedor/blob/master/vaga.md
+Antes, precisamos liberar o uso de App menos seguros na sua conta Google. Basta seguir esse [tutorial](https://support.google.com/accounts/answer/6010255#zippy=%2Cse-a-op%C3%A7%C3%A3o-acesso-a-app-menos-seguro-estiver-desativada-para-sua-conta)
+
+---
+
+Abra o arquivo `.env` e edite as variáveis abaixo com as suas informações
+
+```
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.googlemail.com
+MAIL_PORT=465
+MAIL_USERNAME=seu email aqui
+MAIL_PASSWORD=sua senha aqui
+MAIL_ENCRYPTION=ssl
+MAIL_FROM_ADDRESS=seu email aqui
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+Depois de inserir suas informações, rode o comando abaixo
+
+```bash
+docker exec -ti desafio_ot-api php artisan queue:work
+```
+
+Pronto, agora você deve visualizar os logs dos eventos de envio de email. Basta checar sua caixa de entrada que os emails estarão lá.

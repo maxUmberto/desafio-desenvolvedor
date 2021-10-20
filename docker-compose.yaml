@@ -25,12 +25,13 @@ services:
     container_name: desafio_ot-front
     volumes: 
       - ./frontend:/app:rw
+      - /app/node_modules
     networks:
       - desafio_ot
     depends_on: 
       - api
     ports:
-      - "8080:8080"
+      - '8081:8080'
 
   db:
     image: mysql:latest

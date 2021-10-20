@@ -44,6 +44,17 @@ Se tudo tiver certo, você irá ver os seguintes containers rodando:
 
 Se tudo correu bem até aqui, já está pronto para testar o projeto. Abra seu navegador e navegue até o endereço `http://localhost:8081`. Agora basta criar um usuário e testar a aplicação. ~~E com fé nada vai quebrar~~
 
+
+*Durante os testes percebi que haviam algumas falhas na inicialização dos containers. Não consegui debugar o suficiente, mas caso passe por esse problema, iniciar os serviços separadamente resolve o problema. Rode os comandos abaixo um de cada vez*
+
+```bash
+docker-compose up -d redis
+docker-compose up -d db
+docker-compose up -d api
+docker-compose up -d nginx
+docker-compose up -d front
+```
+
 ## Testando email
 Para que o projeto consiga mandar emails, é necessário fazer alguns procedimentos antes. Vamos utilizar seu email pessoal do GMAIL para isso. Como você irá executar este projeto no seu local, não precisa se preocupar de inserir suas informações, elas não ira se tornar públicas ~~mas cuidado com o colega de trabalho passando na tela atrás~~.
 
